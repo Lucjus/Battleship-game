@@ -10,13 +10,74 @@ window.addEventListener('keydown', playerMove)
 window.addEventListener('click', playerShoot)
 let playerShipX = gameCardWidth / 2 - 40;
 let playerShipY = gameCardHeight - 100;
-let playerRocketX = playerShipX + 31;
-let playerRocketY = playerShipY - 30;
+const arrayOfPlayerRockets = []
+const arrayOfWeakEnemies = []
 let called = false;
+let called2 = false;
+const enemy = document.getElementById('enemy')
+class WeakEnemy {
+    constructor() {
+        this.enemy = document.getElementById('enemy')
+        this.enemyX = Math.floor(Math.random() * 500)
+        this.enemyY = Math.floor(Math.random() * 500)
+    }
+    flyEnemy() {
 
+        this.x = Math.floor(Math.random() * 700)
+        this.y = Math.floor(Math.random() * 1000)
+    }
+
+    drawEnemy() {
+        ctx.drawImage(this.enemy, this.enemyX, this.enemyY)
+
+        if (this.enemyX < this.x && this.enemyY < this.y) {
+            this.enemyX += 2;
+            this.enemyY += 2;
+        } else if (this.enemyX < this.x && this.enemyY > this.y) {
+            this.enemyX += 2;
+            this.enemyY -= 2;
+        } else if (this.enemyX > this.x && this.enemyY < this.y) {
+            this.enemyX -= 2;
+            this.enemyY += 2;
+        } else if (this.enemyX > this.x && this.enemyY > this.y) {
+            this.enemyX -= 2;
+            this.enemyY -= 2;
+        }
+
+
+    }
+
+}
+
+
+function drawWeakEnemies() {
+    setInterval(() => {
+        new WeakEnemy();
+    }, 2000)
+    arrayOfWeakEnemies.push(new WeakEnemy())
+    called2 = true;
+    return called2;
+
+}
+setTimeout(drawWeakEnemies, 1000)
+class PlayerRocket {
+    constructor() {
+        this.playerRocket = document.getElementById('rocket')
+        this.playerRocketX = playerShipX + 31;
+        this.playerRocketY = playerShipY - 40;
+        ctx.drawImage(this.playerRocket, this.playerRocketX, this.playerRocketY);
+    }
+    drawRocket() {
+        ctx.drawImage(this.playerRocket, this.playerRocketX, this.playerRocketY);
+
+        this.playerRocketY -= 12;
+
+    }
+
+
+}
 
 function ship() {
-
     ctx.drawImage(playerShip, playerShipX, playerShipY);
 }
 
@@ -27,55 +88,111 @@ function gameCard() {
 }
 
 function playerMove(e) {
-
-    console.log(e.keyCode)
+    // console.log(e.keyCode)
+    var i = 0;
     if (e.keyCode === 87) {
-        playerShipY -= 20;
+        setInterval(function () {
+            if (i >= 40) return;
+            playerShipY -= 1;
+            i++;
 
+        }, 5);
     } else if (e.keyCode === 83) {
-        playerShipY += 20;
-
+        setInterval(function () {
+            if (i >= 40) return;
+            playerShipY += 1;
+            i++;
+        }, 5);
     } else if (e.keyCode === 68) {
-        playerShipX += 20;
+        setInterval(function () {
+            if (i >= 40) return;
+            playerShipX += 1;
+            i++;
+        }, 5);
+    } else if (e.keyCode === 87 && e.keyCode === 68) {
+        setInterval(function () {
+            if (i >= 40) return;
+            playerShipY -= 1;
+            playerShipX += 1;
+            i++;
+        }, 5);
 
-    } else if (e.keyCode === 87 || e.keyCode === 68) {
-        playerShipY -= 20;
-        playerShipX += 20;
+    } else if (e.keyCode === 87 && e.keyCode === 65) {
+        setInterval(function () {
+            if (i >= 40) return;
+            playerShipY -= 1;
+            playerShipX -= 1;
+            i++;
+        }, 5)
     } else {
-        playerShipX -= 20;
+        setInterval(function () {
+            if (i >= 40) return;
+            playerShipX -= 1;
+            i++;
+        }, 5);
     }
-
-
 }
 
 function playerShoot() {
-    console.log('psps')
-    ctx.drawImage(playerRocket, playerRocketX, playerRocketY);
+    new PlayerRocket();
+    arrayOfPlayerRockets.push(new PlayerRocket());
     called = true;
     return called;
 }
 
 
+function detectColision() {
+    // Detect whether ship could touch any of GameCard edges.
+    if (playerShipX <= 0) {
+        playerShipX = 1;
+    } else if (playerShipX >= 740) {
+        playerShipX = 739
+    } else if (playerShipY >= 1120) {
+        playerShipY = 1121;
+    }
+
+    // Detect PlayerRocket coliision with enemy ships.
 
 
-function drawRocket() {
-    ctx.drawImage(playerRocket, playerRocketX, playerRocketY);
-    playerRocketY -= 10;
 }
+
+function fly() {
+    if (called2) {
+        for (let i = 0; i < arrayOfWeakEnemies.length; i++) {
+            arrayOfWeakEnemies[i].flyEnemy()
+        }
+
+    }
+}
+setInterval(fly, 500)
 
 function allAnimation() {
     gameCard();
     ship();
-
+    detectColision()
     if (called) {
-        drawRocket()
+        for (let i = 0; i < arrayOfPlayerRockets.length; i++) {
+            for (let y = 0; y < arrayOfWeakEnemies.length; y++) {
+                if ((arrayOfPlayerRockets[i].playerRocketY - arrayOfWeakEnemies[y].enemyY) <= 2 && arrayOfPlayerRockets[i].playerRocketX === arrayOfWeakEnemies[y].enemyX) {
+
+
+                }
+            }
+        }
     }
 
+    if (called) {
+        for (let i = 0; i < arrayOfPlayerRockets.length; i++) {
+            arrayOfPlayerRockets[i].drawRocket()
+
+        }
+    }
+    if (called2) {
+        for (let i = 0; i < arrayOfWeakEnemies.length; i++) {
+            arrayOfWeakEnemies[i].drawEnemy();
+        }
+
+    }
 }
+
 setInterval(allAnimation, 1000 / 60)
-
-
-
-
-
-// 87 - Do przodu, 83 - do tyłu. 65 - lewo 68 - prawo
