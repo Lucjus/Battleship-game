@@ -4,8 +4,14 @@
 }
 
 body {
+    font-family: 'Roboto', sans-serif;
     height: 100vh;
     display: flex;
     justify-content: center;
     align-content: center;
+}
+
+span {
+    font-weight: bold;
+    width: 50px;
 }

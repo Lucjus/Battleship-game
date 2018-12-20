@@ -12,9 +12,34 @@ let playerShipX = gameCardWidth / 2 - 40;
 let playerShipY = gameCardHeight - 100;
 const arrayOfPlayerRockets = []
 const arrayOfWeakEnemies = []
+const arrayOfWeakEnemiesRockets = []
 let called = false;
 let called2 = false;
+let called3 = false;
+let armorShip = 50;
+let scoreSpan = document.getElementById('score')
+let score = 0;
+scoreSpan.innerHTML = `Your score : ${score}`
+const armorSpan = document.getElementById('armor')
+armorSpan.innerHTML = `Your armor: ${armorShip}`
 const enemy = document.getElementById('enemy')
+barsCanvas = document.getElementById('bars')
+const barsCtx = barsCanvas.getContext('2d')
+barsCanvas.width = 300;
+barsCanvas.height = 300;
+barsCtx.fillStyle = '#001000'
+barsCtx.fillRect(0, 0, 400, 400)
+class WeakEnemyRocket {
+    constructor() {
+        this.enemyRocket = document.getElementById('enRocket')
+        this.enemyRocketY;
+        this.enemyRocketX;
+    }
+    drawEnemyRocket() {
+        ctx.drawImage(this.enemyRocket, this.enemyRocketX, this.enemyRocketY)
+        this.enemyRocketY += 8;
+    }
+}
 class WeakEnemy {
     constructor() {
         this.enemy = document.getElementById('enemy')
@@ -69,7 +94,6 @@ class PlayerRocket {
     }
     drawRocket() {
         ctx.drawImage(this.playerRocket, this.playerRocketX, this.playerRocketY);
-
         this.playerRocketY -= 12;
 
     }
@@ -88,7 +112,7 @@ function gameCard() {
 }
 
 function playerMove(e) {
-    // console.log(e.keyCode)
+
     var i = 0;
     if (e.keyCode === 87) {
         setInterval(function () {
@@ -164,7 +188,50 @@ function fly() {
 
     }
 }
+
+
+function enemyShoot() {
+    new WeakEnemyRocket()
+    arrayOfWeakEnemiesRockets.push(new WeakEnemyRocket())
+    for (let i = 0; i < arrayOfWeakEnemies.length; i++) {
+        arrayOfWeakEnemiesRockets[i].enemyRocketX = arrayOfWeakEnemies[i].enemyX + 17;
+        arrayOfWeakEnemiesRockets[i].enemyRocketY = arrayOfWeakEnemies[i].enemyY + 40;
+    }
+    called3 = true;
+    return called3;
+
+}
+
+
+function checkHit() {
+
+
+    for (let i = 0; i < arrayOfWeakEnemiesRockets.length; i++) {
+        // if (called3) {
+        if ((Math.abs(arrayOfWeakEnemiesRockets[i].enemyRocketX - playerShipX)) <= 15 && (Math.abs(arrayOfWeakEnemiesRockets[i].enemyRocketY - playerShipY)) <= 20) {
+            arrayOfWeakEnemiesRockets.splice(i, 1);
+            armorSpan.innerHTML = `Your armor: ${armorShip}`
+            armorShip -= 2
+
+        }
+    }
+
+}
+
+function el() {
+    for (let i = 0; i < arrayOfWeakEnemiesRockets.length; i++) {
+
+        if (arrayOfWeakEnemiesRockets[i].enemyRocketY > 1000) {
+            arrayOfWeakEnemiesRockets.splice(i, 1)
+
+        }
+
+
+    }
+}
 setInterval(fly, 500)
+setInterval(enemyShoot, 2000)
+// setInterval(el, 500)
 
 function allAnimation() {
     gameCard();
@@ -173,26 +240,41 @@ function allAnimation() {
     if (called) {
         for (let i = 0; i < arrayOfPlayerRockets.length; i++) {
             for (let y = 0; y < arrayOfWeakEnemies.length; y++) {
-                if ((arrayOfPlayerRockets[i].playerRocketY - arrayOfWeakEnemies[y].enemyY) <= 2 && arrayOfPlayerRockets[i].playerRocketX === arrayOfWeakEnemies[y].enemyX) {
-
-
+                if ((Math.abs(arrayOfPlayerRockets[i].playerRocketY - arrayOfWeakEnemies[y].enemyY)) <= 20 && (Math.abs(arrayOfPlayerRockets[i].playerRocketX - arrayOfWeakEnemies[y].enemyX)) <= 20) {
+                    arrayOfPlayerRockets.splice(i, 1);
+                    arrayOfWeakEnemies.splice(y, 1);
+                    score += 100
+                    scoreSpan.innerHTML = `Your score : ${score}`
                 }
+
             }
+
         }
+
     }
 
     if (called) {
         for (let i = 0; i < arrayOfPlayerRockets.length; i++) {
             arrayOfPlayerRockets[i].drawRocket()
+            if (arrayOfPlayerRockets[i].playerRocketY < 10) {
+                arrayOfPlayerRockets.splice(i, 1);
+            }
 
         }
     }
     if (called2) {
         for (let i = 0; i < arrayOfWeakEnemies.length; i++) {
             arrayOfWeakEnemies[i].drawEnemy();
-        }
 
+
+        }
+        if (called3) {
+            for (let i = 0; i < arrayOfWeakEnemiesRockets.length; i++) {
+                arrayOfWeakEnemiesRockets[i].drawEnemyRocket();
+            }
+        }
     }
+    checkHit()
 }
 
 setInterval(allAnimation, 1000 / 60)
