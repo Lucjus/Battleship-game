@@ -11,9 +11,24 @@
 </head>
 
 <body>
-    <div id="start-game"><button id='start'>
+    <div id='divEnd'>
+        <h1 id='highscore'></h1>
+        <button>
+            <p>Start new game</p>
+        </button>
+    </div>
+
+    <div id="start-game"><button class='start'>
             <p>Start new game</p>
         </button></div>
+    <div style='display:none;'>
+        <img id='backg' src="img/bggg.png" alt=""></div>
+    <div style='display:none;'>
+        <img id='player' src="img/player.png" alt=""></div>
+    <div style='display:none;'>
+        <img id='boss-rocket' src="img/boss-rocket.png" alt=""></div>
+    <div style='display:none;'>
+        <img id='boss' src="img/boss.png" alt=""></div>
     <div style='display:none;'>
         <img id='small-asteroid' src="img/small-asteroid.png" alt=""></div>
     <div style='display:none;'>
@@ -32,10 +47,10 @@
         <img id='rocket' src="img/rocket.png" alt=""></div>
     <div style='display:none;'>
         <img id='enemy' src="img/weak-enemy.png" alt=""></div>
-    <canvas></canvas>
+    <canvas id='background'></canvas>
     <span id='armor'></span>
     <span id='score'></span>
-
+    <canvas id="display" width="640" height="480"></canvas>
     <script src="main.js"></script>
 </body>
 
