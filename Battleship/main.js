@@ -12,6 +12,9 @@ const highscore = document.getElementById('highscore')
 let game = null;
 let timer = 0;
 const background = document.getElementById('backg')
+let drawningY = 0;
+
+
 
 function clock() {
     timer++;
@@ -36,6 +39,7 @@ function show() {
     }
 
 }
+
 
 function gameStart() {
     score = 0;
@@ -87,6 +91,12 @@ const armorSpan = document.getElementById('armor')
 let armorShip = 20;
 armorSpan.innerHTML = `Your armor: ${armorShip}`
 const enemy = document.getElementById('enemy')
+const one = document.getElementById('one')
+const two = document.getElementById('two')
+const three = document.getElementById('three')
+const exArray = []
+exArray.push(one, two, three)
+
 
 class WeakEnemyRocket {
     constructor() {
@@ -131,6 +141,13 @@ class WeakEnemy {
 
     }
 
+    bum() {
+        for (let i = 0; i < exArray.length; i++) {
+            // ctx.drawImage(exArray[i], this.enemyX, this.enemyY)
+
+        }
+
+    }
 }
 class BetterEnemy {
     constructor() {
@@ -321,6 +338,7 @@ class PlayerRocket {
 
 }
 
+
 class SmallAsteroid {
     constructor() {
         this.smallAsteroid = document.getElementById('small-asteroid')
@@ -340,16 +358,33 @@ function createSmallAsteroid() {
 
 }
 
+
+
+
+
 function ship() {
     ctx.drawImage(playerShip, playerShipX, playerShipY);
 }
 
+let background2 = new Image();
+
 function gameCard() {
+
+    background2.src = "img/wdw.png";
+    drawningY++
     // ctx.fillStyle = '#000017'
     // ctx.fillRect(0, 0, gameCardWidth, gameCardHeight)
-    ctx.drawImage(background, 0, 0)
 
-}
+    ctx.drawImage(background2, 0, drawningY)
+    ctx.drawImage(background2, 0, drawningY - gameCardHeight)
+
+    // If the image scrolled off the screen, reset
+    if (drawningY >= gameCardHeight)
+        drawningY = 0;
+};
+
+
+
 
 function playerMove(e) {
 
@@ -533,6 +568,7 @@ function checkHit() {
 
 
 
+
 function checkLoss() {
     if (armorShip <= 0) {
         game = false;
@@ -552,18 +588,24 @@ function checkLoss() {
 
 }
 
+
+
 function allAnimation() {
     gameCard();
     ship();
     detectColision()
     checkHit()
     checkLoss()
+
     if (called) {
         for (let i = 0; i < arrayOfPlayerRockets.length; i++) {
             for (let y = 0; y < arrayOfWeakEnemies.length; y++) {
                 if ((Math.abs(arrayOfPlayerRockets[i].playerRocketY - arrayOfWeakEnemies[y].enemyY)) <= 20 && (Math.abs(arrayOfPlayerRockets[i].playerRocketX - arrayOfWeakEnemies[y].enemyX)) <= 20) {
                     arrayOfPlayerRockets.splice(i, 1);
+                    arrayOfWeakEnemies[y].bum()
                     arrayOfWeakEnemies.splice(y, 1);
+
+
                     score += 100
                     scoreSpan.innerHTML = `Your score : ${score}`
                 }
@@ -652,8 +694,11 @@ function allAnimation() {
 
     }
 
+
     if (timer >= 5) {
+
         bs.drawBoss()
+
         for (let i = 0; i < arrayOfBossRockets.length; i++) {
             arrayOfBossRockets[i].drawBossRocket()
         }
