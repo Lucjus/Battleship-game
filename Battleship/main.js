@@ -13,7 +13,7 @@ let game = null;
 let timer = 0;
 const background = document.getElementById('backg')
 let drawningY = 0;
-
+const arr = []
 
 
 function clock() {
@@ -40,6 +40,12 @@ function show() {
 
 }
 
+//function d () {
+//    arr.push(
+//        setInterval(drawWeakEnemies, 2000),
+//        setInterval(createBetterEnemies, 4000),
+//        setInterval(createSim, 3000),)
+//}
 
 function gameStart() {
     score = 0;
@@ -284,6 +290,7 @@ class Boss {
         }
 
     }
+
 }
 
 
@@ -515,7 +522,8 @@ function drawHealthbar(canvas, x, y, width, height, armorShip, max_health) {
     if (armorShip <= 0) {
         armorShip = 0;
     }
-    display.drawImage(player, 250, 120, 60, 60);
+    display.drawImage(player, 250, 120);
+   
     canvas.fillStyle = '#000000';
     canvas.fillRect(x, y, width, height);
     let colorNumber = Math.round((1 - (armorShip / max_health)) * 0xff) * 0x10000 + Math.round((armorShip / max_health) * 0xff) * 0x100;
@@ -566,6 +574,19 @@ function checkHit() {
 
 }
 
+var sandwiches = [
+	'tuna',
+	'ham',
+	'turkey',
+	'pb&j'
+];
+
+sandwiches.forEach(function (sandwich, index) {
+    if(index === 0) {
+	console.log(index);
+	console.log(sandwich)
+    }
+});
 
 
 
@@ -583,8 +604,8 @@ function checkLoss() {
         arrayOfWeakEnemiesRockets.splice(0, arrayOfWeakEnemiesRockets.length)
         arrayOfBetterEnemies.splice(0, arrayOfBetterEnemies.length)
         arrayOfBetterEnemiesRockets.splice(0, arrayOfWeakEnemiesRockets.length)
-        arrayOfSmallAsteroids.splice(0, arrayOfSmallAsteroids.length);
-    }
+        arrayOfSmallAsteroids.splice(0, arrayOfSmallAsteroids.length)
+        arrayOfPlayerRockets.splice(0, arrayOfPlayerRockets.length)    }
 
 }
 
@@ -695,10 +716,29 @@ function allAnimation() {
     }
 
 
-    if (timer >= 5) {
+    if (timer >= 13) {
 
+       arrayOfIntervals.forEach(function (interval, index) {
+    if(index === 6) {
+	clearInterval(interval)
+    }  
+           if(index === 9) {
+	clearInterval(interval)
+    } 
+                   if(index === 7) {
+	clearInterval(interval)
+    } 
+       
+});
+    }
+ if(timer >= 10 && timer <15) {
+ctx.drawImage(player, 700, 1000);
+        
+        
+    }
+    if(timer >= 15) {
+        
         bs.drawBoss()
-
         for (let i = 0; i < arrayOfBossRockets.length; i++) {
             arrayOfBossRockets[i].drawBossRocket()
         }
