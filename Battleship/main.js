@@ -304,12 +304,13 @@ class BossRocket {
 }
 
 function bossShoot() {
-    arrayOfBossRockets.push(new BossRocket())
-    for (let i = 0; i < arrayOfBossRockets.length; i++) {
-        arrayOfBossRockets[i].bossRocketX = bs.bossX + 17;
-        arrayOfBossRockets[i].bossRocketY = bs.bossY + 40;
+    if (bs != undefined) {
+        arrayOfBossRockets.push(new BossRocket())
+        for (let i = 0; i < arrayOfBossRockets.length; i++) {
+            arrayOfBossRockets[i].bossRocketX = bs.bossX + 17;
+            arrayOfBossRockets[i].bossRocketY = bs.bossY + 40;
+        }
     }
-
 }
 
 
@@ -559,8 +560,6 @@ function checkHit() {
 
     for (let i = 0; i < arrayOfBossRockets.length; i++) {
         if ((Math.abs(arrayOfBossRockets[i].bossRocketX - (playerShipX + 23)) <= 20 && (Math.abs(arrayOfBossRockets[i].bossRocketY - (playerShipY + 33)) <= 20))) {
-
-            console.log('elo')
             armorShip -= 1
             arrayOfBossRockets.splice(i, 1);
 
@@ -695,6 +694,15 @@ function allAnimation() {
 
         }
     }
+
+
+    for (let i = 0; i < arrayOfBossRockets.length; i++) {
+        if (arrayOfBossRockets[i].bossRocketY > 1100) {
+            arrayOfBossRockets.splice(i, 1);
+        }
+
+    }
+
     if (called2) {
         for (let i = 0; i < arrayOfWeakEnemies.length; i++) {
             arrayOfWeakEnemies[i].drawEnemy();
