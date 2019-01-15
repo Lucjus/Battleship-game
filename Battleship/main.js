@@ -13,8 +13,8 @@ let game = null;
 let timer = 0;
 const background = document.getElementById('backg')
 let drawningY = 0;
-const arr = []
-
+const bossPicture = document.getElementById('boss2')
+const bossArray = []
 
 function clock() {
     timer++;
@@ -25,6 +25,7 @@ function el() {
     game = true;
     if (game) {
         divEnd.style.opacity = "0"
+        // setInterval(clock, 1000)
         gameStart()
     }
 }
@@ -34,36 +35,36 @@ function show() {
     game = true;
     if (game) {
         divStart.style.opacity = "0"
-        setInterval(clock, 1000)
+        // setInterval(clock, 1000)
         gameStart()
     }
 
 }
-
-//function d () {
-//    arr.push(
-//        setInterval(drawWeakEnemies, 2000),
-//        setInterval(createBetterEnemies, 4000),
-//        setInterval(createSim, 3000),)
-//}
+let bs;
 
 function gameStart() {
     score = 0;
     scoreSpan.innerHTML = `Your score: ${score}`
     armorShip = 20;
+    timer = 0;
+    bs = new Boss()
+    bossArray.push(bs)
     armorSpan.innerHTML = `Your armor: ${armorShip}`
     arrayOfIntervals.push(setInterval(allAnimation, 1000 / 60),
         setInterval(fly, 500),
         setInterval(flyBetterEnemy, 500),
-        setInterval(enemyShoot, 2000),
-        setInterval(betterEnemyShoot, 3000),
-        setInterval(simShoot, 2000),
-        setInterval(drawWeakEnemies, 2000),
-        setInterval(createBetterEnemies, 4000),
-        setInterval(createSmallAsteroid, 5000),
-        setInterval(createSim, 3000),
+        // setInterval(enemyShoot, 2000),
+        // setInterval(betterEnemyShoot, 3000),
+        // setInterval(simShoot, 2000),
+        // setInterval(drawWeakEnemies, 2000),
+        // setInterval(createBetterEnemies, 4000),
+        // setInterval(createSmallAsteroid, 5000),
+        // setInterval(createSim, 3000),
+        setInterval(clock, 1000),
         setInterval(flyTo, 500),
         setInterval(bossShoot, 1000))
+    // startGameAgain()
+    // bossArray.splice(0, bossArray.length)
 }
 canvas.width = 800
 canvas.height = 1200
@@ -94,14 +95,10 @@ let scoreSpan = document.getElementById('score')
 let score = 0;
 scoreSpan.innerHTML = `Your score : ${score}`
 const armorSpan = document.getElementById('armor')
-let armorShip = 20;
+let armorShip;
 armorSpan.innerHTML = `Your armor: ${armorShip}`
-const enemy = document.getElementById('enemy')
-const one = document.getElementById('one')
-const two = document.getElementById('two')
-const three = document.getElementById('three')
-const exArray = []
-exArray.push(one, two, three)
+
+
 
 
 class WeakEnemyRocket {
@@ -147,13 +144,6 @@ class WeakEnemy {
 
     }
 
-    bum() {
-        for (let i = 0; i < exArray.length; i++) {
-            // ctx.drawImage(exArray[i], this.enemyX, this.enemyY)
-
-        }
-
-    }
 }
 class BetterEnemy {
     constructor() {
@@ -266,7 +256,7 @@ class Boss {
         this.boss = document.getElementById('boss');
         this.bossX = Math.floor(Math.random() * 500)
         this.bossY = Math.floor(Math.random() * 500)
-        this.bossArmor = 15;
+        this.bossArmor = 4;
 
     }
     bossFly() {
@@ -295,7 +285,7 @@ class Boss {
 
 
 
-let bs = new Boss()
+
 
 function flyTo() {
     bs.bossFly()
@@ -321,6 +311,7 @@ function bossShoot() {
     }
 
 }
+
 
 function drawWeakEnemies() {
     arrayOfWeakEnemies.push(new WeakEnemy())
@@ -376,16 +367,10 @@ function ship() {
 let background2 = new Image();
 
 function gameCard() {
-
     background2.src = "img/wdw.png";
     drawningY++
-    // ctx.fillStyle = '#000017'
-    // ctx.fillRect(0, 0, gameCardWidth, gameCardHeight)
-
     ctx.drawImage(background2, 0, drawningY)
     ctx.drawImage(background2, 0, drawningY - gameCardHeight)
-
-    // If the image scrolled off the screen, reset
     if (drawningY >= gameCardHeight)
         drawningY = 0;
 };
@@ -440,7 +425,6 @@ function playerMove(e) {
 }
 
 function playerShoot() {
-    // new PlayerRocket();
     arrayOfPlayerRockets.push(new PlayerRocket());
     called = true;
     return called;
@@ -523,7 +507,7 @@ function drawHealthbar(canvas, x, y, width, height, armorShip, max_health) {
         armorShip = 0;
     }
     display.drawImage(player, 250, 120);
-   
+
     canvas.fillStyle = '#000000';
     canvas.fillRect(x, y, width, height);
     let colorNumber = Math.round((1 - (armorShip / max_health)) * 0xff) * 0x10000 + Math.round((armorShip / max_health) * 0xff) * 0x100;
@@ -540,7 +524,8 @@ function drawHealthbar(canvas, x, y, width, height, armorShip, max_health) {
 
 
 function checkHit() {
-    drawHealthbar(display, 200, 200, 200, 15, armorShip, 20);
+    let p = null
+    drawHealthbar(display, 200, 200, 200, 15, armorShip, 20)
     for (let i = 0; i < arrayOfWeakEnemiesRockets.length; i++) {
 
         if ((Math.abs(arrayOfWeakEnemiesRockets[i].enemyRocketX - (playerShipX + 23)) <= 20 && (Math.abs(arrayOfWeakEnemiesRockets[i].enemyRocketY - (playerShipY + 33)) <= 20))) {
@@ -572,40 +557,48 @@ function checkHit() {
         }
     }
 
+    for (let i = 0; i < arrayOfBossRockets.length; i++) {
+        if ((Math.abs(arrayOfBossRockets[i].bossRocketX - (playerShipX + 23)) <= 20 && (Math.abs(arrayOfBossRockets[i].bossRocketY - (playerShipY + 33)) <= 20))) {
+
+            console.log('elo')
+            armorShip -= 1
+            arrayOfBossRockets.splice(i, 1);
+
+            armorSpan.innerHTML = `Your armor: ${armorShip}`
+        }
+
+    }
+
 }
 
-var sandwiches = [
-	'tuna',
-	'ham',
-	'turkey',
-	'pb&j'
-];
-
-sandwiches.forEach(function (sandwich, index) {
-    if(index === 0) {
-	console.log(index);
-	console.log(sandwich)
-    }
-});
-
-
+function reset() {
+    // armorShip = 20;
+    // armorSpan.innerHTML = `Your armor: ${armorShip}`
+    game = false;
+    timer = 0;
+    // divStart.style.display = 'none'
+    // divEnd.style.opacity = '1'
+    arrayOfIntervals.forEach(interval => clearInterval(interval))
+    arrayOfSims.splice(0, arrayOfSims.length)
+    arrayOfSimRockets.splice(0, arrayOfSimRockets.length)
+    arrayOfWeakEnemies.splice(0, arrayOfWeakEnemies.length)
+    arrayOfWeakEnemiesRockets.splice(0, arrayOfWeakEnemiesRockets.length)
+    arrayOfBetterEnemies.splice(0, arrayOfBetterEnemies.length)
+    arrayOfBetterEnemiesRockets.splice(0, arrayOfWeakEnemiesRockets.length)
+    arrayOfSmallAsteroids.splice(0, arrayOfSmallAsteroids.length)
+    arrayOfPlayerRockets.splice(0, arrayOfPlayerRockets.length)
+    bossArray.splice(0, bossArray.length)
+}
 
 function checkLoss() {
     if (armorShip <= 0) {
-        game = false;
-        timer = 0;
-        divStart.style.display = 'none'
-        divEnd.style.opacity = '1'
+        // startGameAgain()
+
         highscore.innerHTML = `You lost! Your highscore is ${score}`
-        arrayOfIntervals.forEach(interval => clearInterval(interval))
-        arrayOfSims.splice(0, arrayOfSims.length)
-        arrayOfSimRockets.splice(0, arrayOfSimRockets.length)
-        arrayOfWeakEnemies.splice(0, arrayOfWeakEnemies.length)
-        arrayOfWeakEnemiesRockets.splice(0, arrayOfWeakEnemiesRockets.length)
-        arrayOfBetterEnemies.splice(0, arrayOfBetterEnemies.length)
-        arrayOfBetterEnemiesRockets.splice(0, arrayOfWeakEnemiesRockets.length)
-        arrayOfSmallAsteroids.splice(0, arrayOfSmallAsteroids.length)
-        arrayOfPlayerRockets.splice(0, arrayOfPlayerRockets.length)    }
+        divEnd.style.opacity = '1'
+        divStart.style.display = 'none'
+        reset()
+    }
 
 }
 
@@ -617,13 +610,30 @@ function allAnimation() {
     detectColision()
     checkHit()
     checkLoss()
-
+    if (called) {
+        for (let i = 0; i < arrayOfPlayerRockets.length; i++) {
+            if ((Math.abs(arrayOfPlayerRockets[i].playerRocketY - bs.bossY)) <= 20 && (Math.abs(arrayOfPlayerRockets[i].playerRocketX - bs.bossX)) <= 42) {
+                arrayOfPlayerRockets.splice(i, 1);
+                arrayOfBossRockets.splice(i, 1)
+                bs.bossArmor -= 1;
+                if (bs.bossArmor === 0) {
+                    score += 1000
+                    scoreSpan.innerHTML = `Your score : ${score}`
+                    divEnd.style.opacity = '1'
+                    divStart.style.display = 'none'
+                    highscore.innerHTML = `Congratulations! You have won! Your highscore is ${score}`
+                    // arrayOfIntervals.forEach(interval => clearInterval(interval))
+                    // startGameAgain()
+                    reset()
+                }
+            }
+        }
+    }
     if (called) {
         for (let i = 0; i < arrayOfPlayerRockets.length; i++) {
             for (let y = 0; y < arrayOfWeakEnemies.length; y++) {
                 if ((Math.abs(arrayOfPlayerRockets[i].playerRocketY - arrayOfWeakEnemies[y].enemyY)) <= 20 && (Math.abs(arrayOfPlayerRockets[i].playerRocketX - arrayOfWeakEnemies[y].enemyX)) <= 20) {
                     arrayOfPlayerRockets.splice(i, 1);
-                    arrayOfWeakEnemies[y].bum()
                     arrayOfWeakEnemies.splice(y, 1);
 
 
@@ -668,6 +678,13 @@ function allAnimation() {
 
         }
     }
+
+
+
+
+
+
+
 
     if (called) {
         for (let i = 0; i < arrayOfPlayerRockets.length; i++) {
@@ -718,26 +735,26 @@ function allAnimation() {
 
     if (timer >= 13) {
 
-       arrayOfIntervals.forEach(function (interval, index) {
-    if(index === 6) {
-	clearInterval(interval)
-    }  
-           if(index === 9) {
-	clearInterval(interval)
-    } 
-                   if(index === 7) {
-	clearInterval(interval)
-    } 
-       
-});
+        arrayOfIntervals.forEach(function (interval, index) {
+            if (index === 6) {
+                clearInterval(interval)
+            }
+            if (index === 9) {
+                clearInterval(interval)
+            }
+            if (index === 7) {
+                clearInterval(interval)
+            }
+
+        });
     }
- if(timer >= 10 && timer <15) {
-ctx.drawImage(player, 700, 1000);
-        
-        
+    if (timer >= 10 && timer < 15) {
+        ctx.drawImage(bossPicture, 700, 1000);
+
+
     }
-    if(timer >= 15) {
-        
+    if (timer >= 5) {
+
         bs.drawBoss()
         for (let i = 0; i < arrayOfBossRockets.length; i++) {
             arrayOfBossRockets[i].drawBossRocket()
