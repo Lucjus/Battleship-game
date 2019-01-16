@@ -9,7 +9,7 @@ body {
     display: flex;
     justify-content: center;
     align-content: center;
-    /* background-color: black; */
+    background-color: black;
 }
 
 span {
@@ -18,6 +18,12 @@ span {
 }
 
 #start-game {
+    background-image: url('img/back.jpg');
+    background-clip: border-box;
+    background-position: left;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: absolute;
     height: 100vh;
     width: 100vw;
@@ -25,9 +31,30 @@ span {
 }
 
 #divEnd {
+    background-image: url('img/back.jpg');
+    background-clip: border-box;
+    background-position: left;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: absolute;
     height: 100vh;
     width: 100vw;
     background-color: blue;
     opacity: 0;
+}
+
+button {
+    font-weight: bold;
+    cursor: pointer;
+    position: relative;
+    top: 30%;
+    border: none;
+    width: 120px;
+    height: 50px;
+    border-radius: 2px;
+}
+
+button:hover {
+    background-color: grey;
 }
