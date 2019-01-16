@@ -95,7 +95,7 @@ function show() {
 
 
 function gameStart() {
-    // audio.play()
+    audio.play()
     playerShipX = gameCardWidth / 2 - 40;
     playerShipY = gameCardHeight - 100;
     score = 0;
@@ -246,7 +246,7 @@ class Boss {
         this.boss = document.getElementById('boss');
         this.bossX = Math.floor(Math.random() * 500)
         this.bossY = Math.floor(Math.random() * 500)
-        this.bossArmor = 4;
+        this.bossArmor = 15;
 
     }
     bossFly() {
@@ -618,8 +618,8 @@ function reset() {
     arrayOfPlayerRockets.splice(0, arrayOfPlayerRockets.length)
 
 
-    // audio.currentTime = 0;
-    // audio.pause()
+    audio.currentTime = 0;
+    audio.pause()
 }
 
 function checkLoss() {
