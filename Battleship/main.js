@@ -6,8 +6,8 @@ const btnStart = document.querySelector('#start-game button')
 const btnStartAgain = document.querySelector('#divEnd button')
 btnStartAgain.addEventListener('click', el)
 btnStart.addEventListener('click', show)
-window.addEventListener('keydown', playerMove)
 window.addEventListener('click', playerShoot)
+window.addEventListener('click', playerMove)
 const divStart = document.getElementById('start-game')
 const divEnd = document.getElementById('divEnd')
 const highscore = document.getElementById('highscore')
@@ -75,7 +75,7 @@ function clock() {
 }
 
 function el() {
-
+    reset()
     game = true;
     if (game) {
         divEnd.style.opacity = "0"
@@ -84,7 +84,7 @@ function el() {
 }
 
 function show() {
-
+    reset()
     game = true;
     if (game) {
         divStart.style.opacity = "0"
@@ -369,50 +369,95 @@ function gameCard() {
 };
 
 
-function playerMove(e) {
+// function playerMove(e) {
+//     let i = 0;
+//     if (e.keyCode === 87) {
+//         setInterval(function () {
+//             if (i >= 60) return;
+//             playerShipY -= 1;
+//             i++;
+
+//         }, 5);
+//     } else if (e.keyCode === 83) {
+//         setInterval(function () {
+//             if (i >= 60) return;
+//             playerShipY += 1;
+//             i++;
+//         }, 5);
+//     } else if (e.keyCode === 68) {
+//         setInterval(function () {
+//             if (i >= 60) return;
+//             playerShipX += 1;
+//             i++;
+//         }, 5);
+//     } else if (e.keyCode === 87 && e.keyCode === 68) {
+//         setInterval(function () {
+//             if (i >= 60) return;
+//             playerShipY -= 1;
+//             playerShipX += 1;
+//             i++;
+//         }, 5);
+
+//     } else if (e.keyCode === 87 && e.keyCode === 65) {
+//         setInterval(function () {
+//             if (i >= 60) return;
+//             playerShipY -= 1;
+//             playerShipX -= 1;
+//             i++;
+//         }, 5)
+//     } else {
+//         setInterval(function () {
+//             if (i >= 60) return;
+//             playerShipX -= 1;
+//             i++;
+//         }, 5);
+//     }
+// }
+let movingY = 0;
+let movingX = 0;
+let moving = 0;
+setInterval(function () {
+    if (moving === 40) {
+        moving = 0;
+        return;
+    }
+    playerMove();
+    moving++;
+}, 5);
+
+function playerMove() {
+    playerShipY += movingY;
+    playerShipX += movingX;
+}
+const keysMap = {};
+onkeydown = onkeyup = function (e) {
+    movingY = 0;
+    movingX = 0;
     let i = 0;
-    if (e.keyCode === 87) {
-        setInterval(function () {
-            if (i >= 60) return;
-            playerShipY -= 1;
-            i++;
-
-        }, 5);
-    } else if (e.keyCode === 83) {
-        setInterval(function () {
-            if (i >= 60) return;
-            playerShipY += 1;
-            i++;
-        }, 5);
-    } else if (e.keyCode === 68) {
-        setInterval(function () {
-            if (i >= 60) return;
-            playerShipX += 1;
-            i++;
-        }, 5);
-    } else if (e.keyCode === 87 && e.keyCode === 68) {
-        setInterval(function () {
-            if (i >= 60) return;
-            playerShipY -= 1;
-            playerShipX += 1;
-            i++;
-        }, 5);
-
-    } else if (e.keyCode === 87 && e.keyCode === 65) {
-        setInterval(function () {
-            if (i >= 60) return;
-            playerShipY -= 1;
-            playerShipX -= 1;
-            i++;
-        }, 5)
-    } else {
-        setInterval(function () {
-            if (i >= 60) return;
-            playerShipX -= 1;
-            i++;
-        }, 5);
+    keysMap[e.keyCode] = e.type == 'keydown';
+    if (keysMap[87] && keysMap[68]) {
+        movingY = -1.5;
+        movingX = 1.5;
+    } else if (keysMap[83] && keysMap[65]) {
+        movingY = 1.5;
+        movingX = -1.5;
+    } else if (keysMap[83] && keysMap[68]) {
+        movingY = 1.5;
+        movingX = 1.5;
+    } else if (keysMap[87] && keysMap[65]) {
+        movingY = -1.5;
+        movingX = -1.5;
+    } else if (keysMap[87]) {
+        movingY = -1.5;
+    } else if (keysMap[83]) {
+        movingY = 1.5;
+    } else if (keysMap[68]) {
+        movingX = 1.5;
+    } else if (keysMap[65]) {
+        movingX = -1.5;
     }
 }
+
 
 function playerShoot() {
     arrayOfPlayerRockets.push(new PlayerRocket());
@@ -485,7 +530,7 @@ function drawHealthbar(canvas, x, y, width, height, armorShip, max_health) {
     if (armorShip <= 0) {
         armorShip = 0;
     }
-    display.drawImage(player, 250, 120);
+    // display.drawImage(player, 250, 120);
 
     canvas.fillStyle = '#000000';
     canvas.fillRect(x, y, width, height);
@@ -557,16 +602,18 @@ function checkHit() {
 }
 
 function reset() {
+
     bs = undefined;
     game = false;
     timer = 0;
     arrayOfIntervals.forEach(interval => clearInterval(interval))
+    arrayOfIntervals.splice(0, arrayOfIntervals.length)
     arrayOfSims.length = 0;
     arrayOfSimRockets.length = 0;
     arrayOfWeakEnemies.splice(0, arrayOfWeakEnemies.length)
     arrayOfWeakEnemiesRockets.splice(0, arrayOfWeakEnemiesRockets.length)
     arrayOfBetterEnemies.splice(0, arrayOfBetterEnemies.length)
-    arrayOfBetterEnemiesRockets.splice(0, arrayOfWeakEnemiesRockets.length)
+    arrayOfBetterEnemiesRockets.splice(0, arrayOfBetterEnemiesRockets.length)
     arrayOfSmallAsteroids.splice(0, arrayOfSmallAsteroids.length)
     arrayOfPlayerRockets.splice(0, arrayOfPlayerRockets.length)
 
@@ -577,7 +624,7 @@ function reset() {
 
 function checkLoss() {
     if (armorShip <= 0) {
-        highscore.innerHTML = `You lost! Your highscore is ${score}`
+        highscore.innerHTML = `You lost! Your score is ${score}`
         divEnd.style.opacity = '1'
         divStart.style.display = 'none'
         reset()
@@ -598,7 +645,7 @@ function rocketHitDetection() {
                         scoreSpan.innerHTML = `Your score : ${score}`
                         divEnd.style.opacity = '1'
                         divStart.style.display = 'none'
-                        highscore.innerHTML = `Congratulations! You have won! Your highscore is ${score}`
+                        highscore.innerHTML = `Congratulations! You have won! Your score is ${score}`
                         reset()
                     }
                 }
