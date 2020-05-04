@@ -4,7 +4,7 @@ const playerShip = document.getElementById('ship')
 const playerRocket = document.getElementById('rocket')
 const btnStart = document.querySelector('#start-game button')
 const btnStartAgain = document.querySelector('#divEnd button')
-btnStartAgain.addEventListener('click', el)
+btnStartAgain.addEventListener('click', startAgain)
 btnStart.addEventListener('click', show)
 window.addEventListener('click', playerShoot)
 window.addEventListener('click', playerMove)
@@ -16,7 +16,7 @@ let timer = 0;
 const background = document.getElementById('backg')
 let drawningY = 0;
 const bossPicture = document.getElementById('boss2')
-let bs;
+let boss;
 let audio = new Audio('img/game-sound.mp3');
 let background2 = new Image();
 canvas.width = 800
@@ -50,12 +50,15 @@ let armorShip;
 armorSpan.innerHTML = `Your armor: ${armorShip}`
 let display = document.getElementById('display').getContext('2d');
 const player = document.getElementById('player')
+let movingY = 0;
+let movingX = 0;
+let moving = 0;
 
 function clock() {
     timer++;
 
     if (timer === 25) {
-        bs = new Boss()
+        boss = new Boss()
     }
     if (timer > 17) {
         arrayOfIntervals.forEach(function (interval, index) {
@@ -74,7 +77,7 @@ function clock() {
     return;
 }
 
-function el() {
+function startAgain() {
     reset()
     game = true;
     if (game) {
@@ -335,11 +338,11 @@ function createSmallAsteroid() {
 }
 
 function bossShoot() {
-    if (bs != undefined) {
+    if (boss != undefined) {
         arrayOfBossRockets.push(new BossRocket())
         for (let i = 0; i < arrayOfBossRockets.length; i++) {
-            arrayOfBossRockets[i].bossRocketX = bs.bossX + 17;
-            arrayOfBossRockets[i].bossRocketY = bs.bossY + 40;
+            arrayOfBossRockets[i].bossRocketX = boss.bossX + 17;
+            arrayOfBossRockets[i].bossRocketY = boss.bossY + 40;
         }
     }
 }
@@ -369,53 +372,6 @@ function gameCard() {
 };
 
 
-// function playerMove(e) {
-//     let i = 0;
-//     if (e.keyCode === 87) {
-//         setInterval(function () {
-//             if (i >= 60) return;
-//             playerShipY -= 1;
-//             i++;
-
-//         }, 5);
-//     } else if (e.keyCode === 83) {
-//         setInterval(function () {
-//             if (i >= 60) return;
-//             playerShipY += 1;
-//             i++;
-//         }, 5);
-//     } else if (e.keyCode === 68) {
-//         setInterval(function () {
-//             if (i >= 60) return;
-//             playerShipX += 1;
-//             i++;
-//         }, 5);
-//     } else if (e.keyCode === 87 && e.keyCode === 68) {
-//         setInterval(function () {
-//             if (i >= 60) return;
-//             playerShipY -= 1;
-//             playerShipX += 1;
-//             i++;
-//         }, 5);
-
-//     } else if (e.keyCode === 87 && e.keyCode === 65) {
-//         setInterval(function () {
-//             if (i >= 60) return;
-//             playerShipY -= 1;
-//             playerShipX -= 1;
-//             i++;
-//         }, 5)
-//     } else {
-//         setInterval(function () {
-//             if (i >= 60) return;
-//             playerShipX -= 1;
-//             i++;
-//         }, 5);
-//     }
-// }
-let movingY = 0;
-let movingX = 0;
-let moving = 0;
 setInterval(function () {
     if (moving === 40) {
         moving = 0;
@@ -497,8 +453,8 @@ function fly() {
         }
     }
 
-    if (bs != undefined)
-        bs.bossFly()
+    if (boss != undefined)
+        boss.bossFly()
 }
 
 function weakEnemyShoot() {
@@ -530,7 +486,7 @@ function drawHealthbar(canvas, x, y, width, height, armorShip, max_health) {
     if (armorShip <= 0) {
         armorShip = 0;
     }
-    // display.drawImage(player, 250, 120);
+
 
     canvas.fillStyle = '#000000';
     canvas.fillRect(x, y, width, height);
@@ -550,13 +506,10 @@ function drawHealthbar(canvas, x, y, width, height, armorShip, max_health) {
 function checkHit() {
     drawHealthbar(display, 200, 200, 200, 15, armorShip, 20)
     for (let i = 0; i < arrayOfWeakEnemiesRockets.length; i++) {
-
         if ((Math.abs(arrayOfWeakEnemiesRockets[i].enemyRocketX - (playerShipX + 23)) <= 20 && (Math.abs(arrayOfWeakEnemiesRockets[i].enemyRocketY - (playerShipY + 33)) <= 20))) {
             arrayOfWeakEnemiesRockets.splice(i, 1);
             armorShip -= 2
             armorSpan.innerHTML = `Your armor: ${armorShip}`
-
-
         }
     }
 
@@ -603,7 +556,7 @@ function checkHit() {
 
 function reset() {
 
-    bs = undefined;
+    boss = undefined;
     game = false;
     timer = 0;
     arrayOfIntervals.forEach(interval => clearInterval(interval))
@@ -616,8 +569,6 @@ function reset() {
     arrayOfBetterEnemiesRockets.splice(0, arrayOfBetterEnemiesRockets.length)
     arrayOfSmallAsteroids.splice(0, arrayOfSmallAsteroids.length)
     arrayOfPlayerRockets.splice(0, arrayOfPlayerRockets.length)
-
-
     audio.currentTime = 0;
     audio.pause()
 }
@@ -635,12 +586,12 @@ function checkLoss() {
 function rocketHitDetection() {
     if (called) {
         for (let i = 0; i < arrayOfPlayerRockets.length; i++) {
-            if (bs != undefined) {
-                if ((Math.abs(arrayOfPlayerRockets[i].playerRocketY - bs.bossY)) <= 20 && (Math.abs(arrayOfPlayerRockets[i].playerRocketX - bs.bossX)) <= 42) {
+            if (boss != undefined) {
+                if ((Math.abs(arrayOfPlayerRockets[i].playerRocketY - boss.bossY)) <= 20 && (Math.abs(arrayOfPlayerRockets[i].playerRocketX - boss.bossX)) <= 42) {
                     arrayOfPlayerRockets.splice(i, 1);
                     arrayOfBossRockets.splice(i, 1)
-                    bs.bossArmor -= 1;
-                    if (bs.bossArmor === 0) {
+                    boss.bossArmor -= 1;
+                    if (boss.bossArmor === 0) {
                         score += 1000
                         scoreSpan.innerHTML = `Your score : ${score}`
                         divEnd.style.opacity = '1'
@@ -773,7 +724,7 @@ function allAnimation() {
         ctx.font = '14px  Roboto '
     }
     if (timer >= 25) {
-        bs.drawBoss()
+        boss.drawBoss()
         for (let i = 0; i < arrayOfBossRockets.length; i++) {
             arrayOfBossRockets[i].drawBossRocket()
         }

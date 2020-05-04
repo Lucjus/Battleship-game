@@ -1,6 +1,7 @@
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 body {
@@ -9,7 +10,7 @@ body {
     display: flex;
     justify-content: center;
     align-content: center;
-    background-color: black;
+
 }
 
 span {
@@ -22,12 +23,11 @@ span {
     background-clip: border-box;
     background-position: left;
     display: flex;
-    align-items: center;
     justify-content: center;
     position: absolute;
     height: 100vh;
     width: 100vw;
-    background-color: black;
+    background-color: transparent;
 }
 
 #divEnd {
@@ -40,18 +40,18 @@ span {
     position: absolute;
     height: 100vh;
     width: 100vw;
-    background-color: blue;
     opacity: 0;
 }
 
 button {
-    font-weight: bold;
+
     cursor: pointer;
-    position: relative;
-    top: 30%;
+    position: absolute;
+    bottom: 30%;
     border: none;
     width: 120px;
     height: 50px;
+    font-weight: bold;
     border-radius: 2px;
 }
 
